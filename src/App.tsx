@@ -23,22 +23,22 @@ function CameraParallax({
   const target = React.useRef(new THREE.Vector3());
 
   useFrame(() => {
-    const nx = headPosRef.current.x; // already normalized [0, 1]
+    const nx = headPosRef.current.x;
     const ny = headPosRef.current.y;
 
-    // Shift range from [0, 1] to [-0.5, 0.5]
-    const px = (nx - 0.5) * 2;
-    const py = (ny - 0.5) * 2;
+    // Smooth the input
+    const smoothedHeadX = 0.1 * nx + 0.9 * headPosRef.current.x;
+    const smoothedHeadY = 0.1 * ny + 0.9 * headPosRef.current.y;
 
-    // Scale movement
-    const moveX = -px * 5; // adjust multiplier for effect strength
+    const px = (smoothedHeadX - 0.5) * 2;
+    const py = (smoothedHeadY - 0.5) * 2;
+
+    const moveX = -px * 5;
     const moveY = py * 5;
 
-    // Smooth target position
     target.current.set(moveX, -moveY, camera.position.z);
-    camera.position.lerp(target.current, 0.5);
+    camera.position.lerp(target.current, 0.1);
 
-    // Always look at scene center
     camera.lookAt(0, 0, 0);
   });
 
