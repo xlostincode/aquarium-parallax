@@ -1,10 +1,18 @@
 import React from "react";
 import * as THREE from "three";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { PerspectiveCamera } from "@react-three/drei";
+import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
+import {
+  Environment,
+  OrbitControls,
+  PerspectiveCamera,
+} from "@react-three/drei";
 import { FaceMesh } from "@mediapipe/face_mesh";
 
-const NUM_SPHERES = 20;
+const NUM_SPHERES = 30;
+
+const PARAMS = {
+  bounds: { x: 20, y: 10, z: 5 },
+};
 
 function CameraParallax({
   headPosRef,
@@ -59,15 +67,17 @@ function RandomSpheres() {
   }, []);
 
   const refs = React.useRef<any[]>([]);
-  const bounds = { x: 20, y: 5, z: 5 };
 
   useFrame(() => {
     spheres.forEach((sphere, i) => {
       sphere.position.add(sphere.velocity);
 
-      if (Math.abs(sphere.position.x) > bounds.x) sphere.velocity.x *= -1;
-      if (Math.abs(sphere.position.y) > bounds.y) sphere.velocity.y *= -1;
-      if (Math.abs(sphere.position.z) > bounds.z) sphere.velocity.z *= -1;
+      if (Math.abs(sphere.position.x) > PARAMS.bounds.x)
+        sphere.velocity.x *= -1;
+      if (Math.abs(sphere.position.y) > PARAMS.bounds.y)
+        sphere.velocity.y *= -1;
+      if (Math.abs(sphere.position.z) > PARAMS.bounds.z)
+        sphere.velocity.z *= -1;
 
       if (refs.current[i]) {
         refs.current[i].position.copy(sphere.position);
@@ -77,10 +87,6 @@ function RandomSpheres() {
 
   return (
     <>
-      <mesh>
-        <boxGeometry args={[bounds.x * 2, bounds.y * 2, bounds.z * 2]} />
-        <meshBasicMaterial color="white" wireframe opacity={0.3} transparent />
-      </mesh>
       {spheres.map((sphere, i) => (
         <mesh key={i} ref={(el) => (refs.current[i] = el)}>
           <sphereGeometry args={[0.3, 32, 32]} />
@@ -88,6 +94,88 @@ function RandomSpheres() {
         </mesh>
       ))}
     </>
+  );
+}
+
+function Tank() {
+  const wallThickness = 1;
+  const wallThicknessHalf = wallThickness / 2;
+  const wallExtraWidth = 2;
+
+  const roughnessMap = useLoader(
+    THREE.TextureLoader,
+    "/environment/green_metal_rust_rough_2k.png"
+  );
+  roughnessMap.wrapS = roughnessMap.wrapT = THREE.RepeatWrapping;
+  roughnessMap.repeat.set(2, 2); // optional tiling
+
+  const meshPhysicalMaterial = React.useMemo(() => {
+    return (
+      <meshPhysicalMaterial
+        transmission={1}
+        thickness={2.5}
+        ior={1.1}
+        roughness={0.5}
+        roughnessMap={roughnessMap}
+        side={THREE.FrontSide}
+      />
+    );
+  }, [roughnessMap]);
+
+  return (
+    <group>
+      {/* Back wall */}
+      <mesh
+        rotation={[0, Math.PI, 0]}
+        position={[0, 0, -PARAMS.bounds.z - wallThicknessHalf]}
+      >
+        <boxGeometry
+          args={[
+            PARAMS.bounds.x * 2 + wallExtraWidth,
+            PARAMS.bounds.y * 2,
+            wallThickness,
+          ]}
+        />
+        {meshPhysicalMaterial}
+      </mesh>
+
+      {/* Left wall */}
+      <mesh
+        rotation={[0, Math.PI / 2, 0]}
+        position={[PARAMS.bounds.x + wallThicknessHalf, 0, 0]}
+      >
+        <boxGeometry
+          args={[PARAMS.bounds.z * 2, PARAMS.bounds.y * 2, wallThickness]}
+        />
+        {meshPhysicalMaterial}
+      </mesh>
+
+      {/* Right wall */}
+      <mesh
+        rotation={[0, -Math.PI / 2, 0]}
+        position={[-PARAMS.bounds.x - wallThicknessHalf, 0, 0]}
+      >
+        <boxGeometry
+          args={[PARAMS.bounds.z * 2, PARAMS.bounds.y * 2, wallThickness]}
+        />
+        {meshPhysicalMaterial}
+      </mesh>
+
+      {/* Bottom */}
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -PARAMS.bounds.y - wallThicknessHalf, 0]}
+      >
+        <boxGeometry
+          args={[
+            PARAMS.bounds.x * 2 + wallExtraWidth,
+            PARAMS.bounds.z * 2,
+            wallThickness,
+          ]}
+        />
+        {meshPhysicalMaterial}
+      </mesh>
+    </group>
   );
 }
 
@@ -147,7 +235,12 @@ function App() {
         className="fixed w-96 aspect-video z-10 top-0 left-0"
       />
       <Canvas className="bg-slate-950">
-        <PerspectiveCamera ref={cameraRef} makeDefault position={[0, 0, 15]} />
+        {/* <OrbitControls /> */}
+        <PerspectiveCamera
+          ref={cameraRef}
+          makeDefault
+          position={[0, 0, PARAMS.bounds.z * 1.75]}
+        />
         <ambientLight intensity={Math.PI / 2} />
         <spotLight
           position={[10, 10, 10]}
@@ -157,8 +250,13 @@ function App() {
           intensity={Math.PI}
         />
         <pointLight position={[-10, -10, -10]} decay={0} intensity={1} />
-        <RandomSpheres />
         <CameraParallax headPosRef={headPosRef} />
+        <Environment files="/environment/horn-koppe_spring_2k.hdr" background />
+        {/* <Tank /> */}
+        <RandomSpheres />
+
+        {/* Helpers */}
+        <axesHelper />
       </Canvas>
     </main>
   );
