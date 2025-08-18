@@ -11,8 +11,19 @@ import { FaceMesh } from "@mediapipe/face_mesh";
 const NUM_SPHERES = 30;
 
 const PARAMS = {
-  bounds: { x: 20, y: 10, z: 5 },
+  bounds: { x: 20, y: 10, z: 10 },
 };
+
+function BoundingBox() {
+  return (
+    <mesh>
+      <boxGeometry
+        args={[PARAMS.bounds.x * 2, PARAMS.bounds.y * 2, PARAMS.bounds.z * 2]}
+      />
+      <meshBasicMaterial color="red" wireframe />
+    </mesh>
+  );
+}
 
 function CameraParallax({
   headPosRef,
@@ -100,80 +111,68 @@ function RandomSpheres() {
 function Tank() {
   const wallThickness = 1;
   const wallThicknessHalf = wallThickness / 2;
-  const wallExtraWidth = 2;
 
-  const roughnessMap = useLoader(
+  const normalMap = useLoader(
     THREE.TextureLoader,
-    "/environment/green_metal_rust_rough_2k.png"
+    "/environment/WaterDropletsMixedBubbled001_NRM_2K.jpg"
   );
-  roughnessMap.wrapS = roughnessMap.wrapT = THREE.RepeatWrapping;
-  roughnessMap.repeat.set(2, 2); // optional tiling
+  normalMap.colorSpace = THREE.LinearSRGBColorSpace;
+  normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
+  normalMap.repeat.set(4, 2);
 
-  const meshPhysicalMaterial = React.useMemo(() => {
-    return (
-      <meshPhysicalMaterial
-        transmission={1}
-        thickness={2.5}
-        ior={1.1}
-        roughness={0.5}
-        roughnessMap={roughnessMap}
-        side={THREE.FrontSide}
-      />
-    );
-  }, [roughnessMap]);
+  // const uvTexture = useLoader(
+  //   THREE.TextureLoader,
+  //   "environment/uv_grid_opengl.jpg"
+  // );
 
   return (
     <group>
       {/* Back wall */}
       <mesh
         rotation={[0, Math.PI, 0]}
-        position={[0, 0, -PARAMS.bounds.z - wallThicknessHalf]}
+        position={[
+          0,
+          (PARAMS.bounds.y * 5) / 2 - PARAMS.bounds.y,
+          -PARAMS.bounds.z - wallThicknessHalf,
+        ]}
       >
         <boxGeometry
-          args={[
-            PARAMS.bounds.x * 2 + wallExtraWidth,
-            PARAMS.bounds.y * 2,
-            wallThickness,
-          ]}
+          args={[PARAMS.bounds.x * 10, PARAMS.bounds.y * 5, wallThickness]}
         />
-        {meshPhysicalMaterial}
-      </mesh>
 
-      {/* Left wall */}
-      <mesh
-        rotation={[0, Math.PI / 2, 0]}
-        position={[PARAMS.bounds.x + wallThicknessHalf, 0, 0]}
-      >
-        <boxGeometry
-          args={[PARAMS.bounds.z * 2, PARAMS.bounds.y * 2, wallThickness]}
+        <meshPhysicalMaterial
+          // map={uvTexture}
+          normalMap={normalMap}
+          roughness={0.5}
+          transmission={1}
+          thickness={2.5}
+          ior={1.1}
+          side={THREE.FrontSide}
+          color={"#c3d0d6"}
         />
-        {meshPhysicalMaterial}
       </mesh>
-
-      {/* Right wall */}
-      <mesh
-        rotation={[0, -Math.PI / 2, 0]}
-        position={[-PARAMS.bounds.x - wallThicknessHalf, 0, 0]}
-      >
-        <boxGeometry
-          args={[PARAMS.bounds.z * 2, PARAMS.bounds.y * 2, wallThickness]}
-        />
-        {meshPhysicalMaterial}
-      </mesh>
+      {/* <BoundingBox /> */}
 
       {/* Bottom */}
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -PARAMS.bounds.y - wallThicknessHalf, 0]}
+        position={[
+          0,
+          -PARAMS.bounds.y - wallThicknessHalf,
+          0 + (PARAMS.bounds.z * 5) / 2 - PARAMS.bounds.z,
+        ]}
       >
         <boxGeometry
-          args={[
-            PARAMS.bounds.x * 2 + wallExtraWidth,
-            PARAMS.bounds.z * 2,
-            wallThickness,
-          ]}
+          args={[PARAMS.bounds.x * 10, PARAMS.bounds.z * 5, wallThickness]}
         />
-        {meshPhysicalMaterial}
+        <meshPhysicalMaterial
+          roughness={0.5}
+          transmission={1}
+          thickness={2.5}
+          ior={1.1}
+          side={THREE.FrontSide}
+          color={"#c3d0d6"}
+        />
       </mesh>
     </group>
   );
@@ -232,27 +231,19 @@ function App() {
     <main className="w-full h-screen">
       <video
         ref={videoRef}
-        className="fixed w-96 aspect-video z-10 top-0 left-0"
+        className="hidden w-96 aspect-video z-10 top-0 left-0"
       />
       <Canvas className="bg-slate-950">
-        {/* <OrbitControls /> */}
+        <OrbitControls />
         <PerspectiveCamera
           ref={cameraRef}
           makeDefault
-          position={[0, 0, PARAMS.bounds.z * 1.75]}
+          position={[0, 0, PARAMS.bounds.z * 1.9]}
         />
         <ambientLight intensity={Math.PI / 2} />
-        <spotLight
-          position={[10, 10, 10]}
-          angle={0.15}
-          penumbra={1}
-          decay={0}
-          intensity={Math.PI}
-        />
-        <pointLight position={[-10, -10, -10]} decay={0} intensity={1} />
-        <CameraParallax headPosRef={headPosRef} />
+        {/* <CameraParallax headPosRef={headPosRef} /> */}
         <Environment files="/environment/horn-koppe_spring_2k.hdr" background />
-        {/* <Tank /> */}
+        <Tank />
         <RandomSpheres />
 
         {/* Helpers */}
