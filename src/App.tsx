@@ -7,6 +7,7 @@ import {
   PerspectiveCamera,
 } from "@react-three/drei";
 import { FaceMesh } from "@mediapipe/face_mesh";
+import SchoolOfFish from "./components/SchoolOfFish";
 
 const NUM_SPHERES = 30;
 
@@ -54,58 +55,6 @@ function CameraParallax({
   });
 
   return null;
-}
-
-function RandomSpheres() {
-  const spheres = React.useMemo(() => {
-    const temp = [];
-    for (let i = 0; i < NUM_SPHERES; i++) {
-      temp.push({
-        position: new THREE.Vector3(
-          (Math.random() - 0.5) * 20,
-          (Math.random() - 0.5) * 6,
-          (Math.random() - 0.5) * 10
-        ),
-        velocity: new THREE.Vector3(
-          (Math.random() - 0.5) * 0.02,
-          (Math.random() - 0.5) * 0.02,
-          (Math.random() - 0.5) * 0.02
-        ),
-        color: new THREE.Color(Math.random(), Math.random(), Math.random()),
-      });
-    }
-    return temp;
-  }, []);
-
-  const refs = React.useRef<any[]>([]);
-
-  useFrame(() => {
-    spheres.forEach((sphere, i) => {
-      sphere.position.add(sphere.velocity);
-
-      if (Math.abs(sphere.position.x) > PARAMS.bounds.x)
-        sphere.velocity.x *= -1;
-      if (Math.abs(sphere.position.y) > PARAMS.bounds.y)
-        sphere.velocity.y *= -1;
-      if (Math.abs(sphere.position.z) > PARAMS.bounds.z)
-        sphere.velocity.z *= -1;
-
-      if (refs.current[i]) {
-        refs.current[i].position.copy(sphere.position);
-      }
-    });
-  });
-
-  return (
-    <>
-      {spheres.map((sphere, i) => (
-        <mesh key={i} ref={(el) => (refs.current[i] = el)}>
-          <sphereGeometry args={[0.3, 32, 32]} />
-          <meshStandardMaterial color={sphere.color} />
-        </mesh>
-      ))}
-    </>
-  );
 }
 
 function Tank() {
@@ -244,8 +193,7 @@ function App() {
         {/* <CameraParallax headPosRef={headPosRef} /> */}
         <Environment files="/environment/horn-koppe_spring_2k.hdr" background />
         <Tank />
-        <RandomSpheres />
-
+        <SchoolOfFish count={10} />
         {/* Helpers */}
         <axesHelper />
       </Canvas>

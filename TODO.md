@@ -1,6 +1,6 @@
 [x] Glass Tank
-[] Sky box
-[] Random Fish
+[x] Sky box
+[x] Random Fish
 [] Algae
 [] Lighting / Shadows
 [] Sounds
