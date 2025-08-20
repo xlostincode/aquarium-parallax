@@ -5,6 +5,8 @@ interface AppState {
   bounds: { x: number; y: number; z: number };
   totalFishCount: number;
   totalSchoolCount: number;
+  totalPebbles: number;
+  totalSeaweed: number;
 }
 
 export const useAppStore = create<AppState>()(
@@ -13,6 +15,8 @@ export const useAppStore = create<AppState>()(
       bounds: { x: 60, y: 10, z: 10 },
       totalFishCount: 10,
       totalSchoolCount: 5,
+      totalPebbles: 50,
+      totalSeaweed: 250,
     }),
     {
       name: "app-storage",

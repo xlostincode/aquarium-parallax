@@ -18,7 +18,7 @@ const SchoolOfFish = () => {
     () =>
       Array.from({ length: totalFishCount }, () => ({
         offset: Math.random() * 1000,
-        scale: randomInRange(0.1, 0.2),
+        scale: randomInRange(0.1, 0.3),
         movementSpeed: randomInRange(0.02, 0.2),
         lerpSpeed: randomInRange(0.02, 0.2),
         center: new THREE.Vector3(
