@@ -5,29 +5,29 @@ import { useGLTF } from "@react-three/drei";
 import { random } from "maath";
 import Fish1 from "./Fish1";
 import { randomInRange } from "../utils";
+import { useAppStore } from "../store/store";
 
-type Props = {
-  count: number;
-};
-
-const SchoolOfFish = ({ count }: Props) => {
+const SchoolOfFish = () => {
   const { scene, animations } = useGLTF("/models/fish_1.glb");
   const fishRefs = React.useRef<THREE.Object3D[]>([]);
 
+  const bounds = useAppStore((state) => state.bounds);
+  const totalFishCount = useAppStore((state) => state.totalFishCount);
+
   const fishData = React.useMemo(
     () =>
-      Array.from({ length: count }, () => ({
+      Array.from({ length: totalFishCount }, () => ({
         offset: Math.random() * 1000,
         scale: randomInRange(0.1, 0.2),
-        movementSpeed: randomInRange(0.2, 0.3),
-        lerpSpeed: randomInRange(0.2, 0.3),
+        movementSpeed: randomInRange(0.02, 0.2),
+        lerpSpeed: randomInRange(0.02, 0.2),
         center: new THREE.Vector3(
           (Math.random() - 0.5) * 40,
           (Math.random() - 0.5) * 20,
           (Math.random() - 0.5) * 20
         ),
       })),
-    [count]
+    [totalFishCount]
   );
 
   // TODO: Maybe use useImperativeHandle
@@ -40,14 +40,10 @@ const SchoolOfFish = ({ count }: Props) => {
     const elapsedTime = state.clock.elapsedTime;
 
     fishRefs.current.forEach((ref, i) => {
-      if (!ref) return;
       const offset = fishData[i].offset;
       const movementSpeed = fishData[i].movementSpeed;
       const lerpSpeed = fishData[i].lerpSpeed;
       const center = fishData[i].center;
-
-      // TODO: Make global
-      const bounds = { x: 60, y: 10, z: 10 };
 
       const target = new THREE.Vector3(
         random.noise.simplex2(elapsedTime * movementSpeed + offset, 0) *

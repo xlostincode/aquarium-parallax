@@ -29,7 +29,6 @@ const Fish1 = ({ scene, animations, index, scale, refSetter }: Props) => {
   });
 
   React.useEffect(() => {
-    console.log("call");
     if (group.current) {
       refSetter(index, group.current);
     }
