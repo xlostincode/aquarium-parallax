@@ -7,6 +7,7 @@ interface AppState {
   totalSchoolCount: number;
   totalPebbles: number;
   totalSeaweed: number;
+  totalBubbles: number;
 }
 
 export const useAppStore = create<AppState>()(
@@ -17,6 +18,7 @@ export const useAppStore = create<AppState>()(
       totalSchoolCount: 5,
       totalPebbles: 50,
       totalSeaweed: 250,
+      totalBubbles: 20,
     }),
     {
       name: "app-storage",

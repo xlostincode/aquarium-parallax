@@ -113,11 +113,11 @@ function App() {
         <Environment files="/environment/horn-koppe_spring_2k.hdr" background />
         <Tank />
         {/* <SchoolOfFish fishId={FISH_IDS.KOI} /> */}
-        <SchoolOfFish fishId={FISH_IDS.GOLD_FISH} />
+        {/* <SchoolOfFish fishId={FISH_IDS.GOLD_FISH} />
         <SchoolOfFish fishId={FISH_IDS.KOI} />
         <SchoolOfFish fishId={FISH_IDS.BETTA} />
         <SchoolOfFish fishId={FISH_IDS.BLUE_TANG} />
-        <SchoolOfFish fishId={FISH_IDS.MANDARIN_FISH} />
+        <SchoolOfFish fishId={FISH_IDS.MANDARIN_FISH} /> */}
         <Floor />
         {/* Helpers */}
         {/* <axesHelper /> */}

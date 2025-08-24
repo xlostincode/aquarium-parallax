@@ -5,7 +5,7 @@ import { useAppStore } from "../store/store";
 import { randomInRange } from "../utils";
 import { Instance, Instances, shaderMaterial } from "@react-three/drei";
 import { extend, useFrame } from "@react-three/fiber";
-import Cave from "./Cave";
+import Coral from "./Coral";
 
 function getHeightAt(x: number, z: number, geometry: THREE.PlaneGeometry) {
   const pos = geometry.attributes.position;
@@ -210,19 +210,8 @@ const Floor = () => {
         })}
       </Instances>
       {/* args={[1, 8, 1, 16]} */}
-      <Instances>
-        <planeGeometry args={[1, 8, 1, 16]} />
-        {/* //@ts-expect-error - TODO: figure out how to type the seaweedMaterial component  */}
-        <seaweedMaterial ref={seaweedMaterialRef} side={THREE.FrontSide} />
-        {seaweedData.map((data, index) => {
-          return (
-            // TODO: Figure out a fix for scaling and positioning so the blades don't clip through the ground
-            <Instance key={index} position={data.position} scale={data.scale} />
-          );
-        })}
-      </Instances>
 
-      {/* <Cave /> */}
+      <Coral />
     </group>
   );
 };

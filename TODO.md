@@ -4,7 +4,7 @@
 [x] Seaweed
 [] Lighting / Shadows
 [] Sounds
-[] Water pump toy
+[x] Water pump toy
 [] Post processing
 [] Refine parallax
 [x] Rocks / Pebbles on the floor
@@ -12,7 +12,13 @@
 [] Links / Attribution
 [] Title / Metadata etc
 
+<!-- Bugs -->
+
+[] Bubbles disappearing issue
+
 // Extra
 
 [] Pebble randomization
 [] Seaweed randomization
+[] Remove static bubbles from model
+[] Optimise coral model

@@ -151,7 +151,7 @@ const BubbleMaterial = shaderMaterial(
       // Apply wiggle effect and upward motion
       float xWiggle = sin(t * aWiggleFreq) * aWiggleAmp;
       float zWiggle = cos(t * aWiggleFreq) * aWiggleAmp;
-      float yOffset = mod(aOffset.y + uTime * aSpeed, 10.0) - 5.0;
+      float yOffset = mod(aOffset.y + uTime * aSpeed, 100.0) - 5.0;
 
       // Final position after transformations
       vec3 transformed = vec3(aOffset.x + xWiggle, yOffset, aOffset.z + zWiggle) + pos;
@@ -170,10 +170,15 @@ const BubbleMaterial = shaderMaterial(
 extend({ BubbleMaterial });
 
 function BubbleShaderBubbles({ position }: { position: THREE.Vector3 }) {
-  const bounds = useAppStore((state) => state.bounds);
+  const totalBubbles = useAppStore((state) => state.totalBubbles);
 
-  const COUNT = 20;
+  // const COUNT = 20;
   const sphereSize = 0.5;
+
+  const bubbleData = React.useMemo(
+    () => new Array(totalBubbles).fill(null),
+    []
+  );
 
   // Generate random positions and other parameters for each bubble
   const [offsets, speeds, phases, wiggleFreqs, wiggleAmps] =
@@ -184,7 +189,7 @@ function BubbleShaderBubbles({ position }: { position: THREE.Vector3 }) {
       const wiggleFreqs = [];
       const wiggleAmps = [];
 
-      for (let i = 0; i < COUNT; i++) {
+      for (let i = 0; i < totalBubbles; i++) {
         const randX = (Math.random() - 0.5) * 2;
         const randY = (Math.random() - 0.5) * 10;
         const randZ = (Math.random() - 0.5) * 2;
@@ -208,17 +213,17 @@ function BubbleShaderBubbles({ position }: { position: THREE.Vector3 }) {
         new Float32Array(wiggleFreqs),
         new Float32Array(wiggleAmps),
       ];
-    }, [position.x, position.y, position.z]);
+    }, [position.x, position.y, position.z, totalBubbles]);
 
   const ref = React.useRef();
 
   // Update uniform time every frame
   useFrame(({ clock }) => {
-    // if (ref.current) ref.current.uTime = clock.getElapsedTime();
+    if (ref.current) ref.current.uTime = clock.getElapsedTime();
   });
 
   return (
-    <Instances limit={COUNT}>
+    <Instances limit={totalBubbles}>
       <sphereGeometry args={[sphereSize, 8, 8]}>
         {/* Attach instanced buffer attributes for each sphere */}
         <instancedBufferAttribute
@@ -244,17 +249,17 @@ function BubbleShaderBubbles({ position }: { position: THREE.Vector3 }) {
       </sphereGeometry>
       <bubbleMaterial ref={ref} transparent depthWrite={false} />
       {/* Render instances */}
-      {new Array(COUNT).fill().map((_, i) => (
+      {bubbleData.map((_, i) => (
         <Instance key={i} />
       ))}
     </Instances>
   );
 }
 
-const Cave = () => {
+const Coral = () => {
   const bounds = useAppStore((state) => state.bounds);
 
-  const { scene } = useGLTF("/models/rock_cave.glb");
+  const { scene } = useGLTF("/models/coral.glb");
 
   const position = React.useMemo(
     () =>
@@ -266,25 +271,9 @@ const Cave = () => {
     [bounds.x, bounds.y, bounds.z, scene.scale.z]
   );
 
-  React.useEffect(() => {
-    scene.traverse((node) => {
-      if (node.isMesh) {
-        node.material = new THREE.MeshStandardMaterial({
-          color: new THREE.Color("#636262"),
-        });
-      }
-    });
-  }, [scene]);
-
-  const bubbleData = React.useMemo(() => {}, []);
-
   return (
     <React.Fragment>
-      <group
-        scale={0.005}
-        rotation={[0, Math.PI / 1.25, 0]}
-        position={position}
-      >
+      <group scale={0.09} rotation={[0, Math.PI / 1.25, 0]} position={position}>
         <primitive object={scene} />
       </group>
       <BubbleShaderBubbles position={position} />
@@ -297,4 +286,4 @@ const Cave = () => {
   );
 };
 
-export default Cave;
+export default Coral;
