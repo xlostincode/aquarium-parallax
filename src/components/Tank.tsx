@@ -27,7 +27,7 @@ const Tank = () => {
   );
   normalMap.colorSpace = THREE.LinearSRGBColorSpace;
   normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
-  normalMap.repeat.set(4, 2);
+  normalMap.repeat.set(10, 10);
 
   // const uvTexture = useLoader(
   //   THREE.TextureLoader,
@@ -54,7 +54,6 @@ const Tank = () => {
         <boxGeometry args={[bounds.x * 10, bounds.y * 5, wallThickness]} />
 
         <meshPhysicalMaterial
-          // map={uvTexture}
           normalMap={normalMap}
           roughness={0.5}
           transmission={1}

@@ -9,6 +9,7 @@ import Tank from "./components/Tank";
 import { FISH_IDS } from "./const/fish";
 import Background from "./components/Background";
 import CameraParallax from "./components/CameraParallax";
+import Lighting from "./components/Lighting";
 
 function App() {
   const videoRef = React.useRef<HTMLVideoElement>(null);
@@ -75,7 +76,7 @@ function App() {
           rotation={[-Math.PI / 16, 0, 0]}
           makeDefault
         />
-        <ambientLight intensity={Math.PI / 2} />
+        <Lighting />
         {/* <CameraParallax headPosRef={headPosRef} /> */}
         <Background />
         <Tank />
