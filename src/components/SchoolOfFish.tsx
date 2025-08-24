@@ -6,17 +6,25 @@ import { random } from "maath";
 import Fish1 from "./Fish1";
 import { randomInRange } from "../utils";
 import { useAppStore } from "../store/store";
+import { FISH_DATA, type FISH_IDS } from "../const/fish";
 
-const SchoolOfFish = () => {
-  const { scene, animations } = useGLTF("/models/fish_1.glb");
+type Props = {
+  fishId: (typeof FISH_IDS)[keyof typeof FISH_IDS];
+};
+
+const SchoolOfFish = ({ fishId }: Props) => {
+  const { scene, animations } = useGLTF(fishId);
   const fishRefs = React.useRef<THREE.Object3D[]>([]);
 
   const bounds = useAppStore((state) => state.bounds);
-  const totalFishCount = useAppStore((state) => state.totalFishCount);
+
+  const fishCount = useAppStore(
+    (state) => state.totalFishCount / state.totalSchoolCount
+  );
 
   const fishData = React.useMemo(
     () =>
-      Array.from({ length: totalFishCount }, () => ({
+      Array.from({ length: fishCount }, () => ({
         offset: Math.random() * 1000,
         scale: randomInRange(0.1, 0.3),
         movementSpeed: randomInRange(0.02, 0.2),
@@ -27,7 +35,7 @@ const SchoolOfFish = () => {
           (Math.random() - 0.5) * 20
         ),
       })),
-    [totalFishCount]
+    [fishCount]
   );
 
   // TODO: Maybe use useImperativeHandle
@@ -76,6 +84,7 @@ const SchoolOfFish = () => {
           key={index}
           scene={scene}
           animations={animations}
+          animation={FISH_DATA[fishId].animation}
           refSetter={setRefForFish}
           index={index}
           scale={data.scale}

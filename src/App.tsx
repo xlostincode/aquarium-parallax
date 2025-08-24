@@ -11,6 +11,7 @@ import SchoolOfFish from "./components/SchoolOfFish";
 import { useAppStore } from "./store/store";
 import Floor from "./components/Floor";
 import Tank from "./components/Tank";
+import { FISH_IDS } from "./const/fish";
 
 function CameraParallax({
   headPosRef,
@@ -111,7 +112,12 @@ function App() {
         {/* <CameraParallax headPosRef={headPosRef} /> */}
         <Environment files="/environment/horn-koppe_spring_2k.hdr" background />
         <Tank />
-        <SchoolOfFish />
+        {/* <SchoolOfFish fishId={FISH_IDS.KOI} /> */}
+        <SchoolOfFish fishId={FISH_IDS.GOLD_FISH} />
+        <SchoolOfFish fishId={FISH_IDS.KOI} />
+        <SchoolOfFish fishId={FISH_IDS.BETTA} />
+        <SchoolOfFish fishId={FISH_IDS.BLUE_TANG} />
+        <SchoolOfFish fishId={FISH_IDS.MANDARIN_FISH} />
         <Floor />
         {/* Helpers */}
         {/* <axesHelper /> */}

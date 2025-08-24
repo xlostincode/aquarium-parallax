@@ -13,7 +13,7 @@ export const useAppStore = create<AppState>()(
   devtools(
     () => ({
       bounds: { x: 60, y: 10, z: 10 },
-      totalFishCount: 10,
+      totalFishCount: 5,
       totalSchoolCount: 5,
       totalPebbles: 50,
       totalSeaweed: 250,
