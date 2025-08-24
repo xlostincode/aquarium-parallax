@@ -5,6 +5,7 @@ import { useAppStore } from "../store/store";
 import { randomInRange } from "../utils";
 import { Instance, Instances, shaderMaterial } from "@react-three/drei";
 import { extend, useFrame } from "@react-three/fiber";
+import Cave from "./Cave";
 
 function getHeightAt(x: number, z: number, geometry: THREE.PlaneGeometry) {
   const pos = geometry.attributes.position;
@@ -220,6 +221,8 @@ const Floor = () => {
           );
         })}
       </Instances>
+
+      {/* <Cave /> */}
     </group>
   );
 };
