@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { useLoader } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 import { useAppStore } from "../store/store";
 
 function BoundingBox({
@@ -33,6 +33,12 @@ const Tank = () => {
   //   THREE.TextureLoader,
   //   "environment/uv_grid_opengl.jpg"
   // );
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    normalMap.offset.x = t * 0.01;
+    normalMap.offset.y = t * 0.01;
+  });
 
   return (
     <group>

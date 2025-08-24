@@ -26,7 +26,7 @@ const SchoolOfFish = ({ fishId }: Props) => {
     () =>
       Array.from({ length: fishCount }, () => ({
         offset: Math.random() * 1000,
-        scale: randomInRange(0.1, 0.3),
+        scale: randomInRange(0.3, 0.5),
         movementSpeed: randomInRange(0.02, 0.2),
         lerpSpeed: randomInRange(0.02, 0.2),
         center: new THREE.Vector3(
