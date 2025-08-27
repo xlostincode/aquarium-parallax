@@ -10,6 +10,7 @@ import { FISH_IDS } from "./const/fish";
 import Background from "./components/Background";
 import CameraParallax from "./components/CameraParallax";
 import Lighting from "./components/Lighting";
+import { Leva } from "leva";
 
 function App() {
   const videoRef = React.useRef<HTMLVideoElement>(null);
@@ -64,14 +65,22 @@ function App() {
 
   return (
     <main className="w-full h-screen">
+      <Leva hidden />
       <video
         ref={videoRef}
         className="hidden w-96 aspect-video z-10 top-0 left-0"
       />
-      <Canvas className="bg-slate-950">
+      <Canvas className="bg-slate-950" shadows>
         <OrbitControls />
         <PerspectiveCamera
-          ref={cameraRef}
+          ref={(camera) => {
+            if (camera) {
+              camera.layers.enable(0);
+              camera.layers.enable(1);
+            }
+
+            cameraRef.current = camera;
+          }}
           position={[0, -bounds.y * 0.5, bounds.z * 2]}
           rotation={[-Math.PI / 16, 0, 0]}
           makeDefault

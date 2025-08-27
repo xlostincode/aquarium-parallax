@@ -52,7 +52,7 @@ const Fish1 = ({
     }
   }, [index, refSetter]);
 
-  return <Clone ref={group} object={scene} scale={scale} />;
+  return <Clone ref={group} object={scene} scale={scale} castShadow />;
 };
 
 export default Fish1;
