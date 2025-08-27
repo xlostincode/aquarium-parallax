@@ -2,19 +2,17 @@
 [x] Sky box
 [x] Random Fish
 [x] Seaweed
-[] Lighting / Shadows
+[x] Lighting / Shadows
 [] Sounds
 [x] Water pump toy
 [] Post processing
 [] Refine parallax
 [x] Rocks / Pebbles on the floor
 [] Code cleanup
-[] Links / Attribution
+[X] Links / Attribution
 [] Title / Metadata etc
 
 <!-- Bugs -->
-
-[] Bubbles disappearing issue
 
 // Extra
 

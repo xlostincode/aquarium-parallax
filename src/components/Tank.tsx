@@ -23,7 +23,7 @@ const Tank = () => {
 
   const normalMap = useLoader(
     THREE.TextureLoader,
-    "/environment/WaterDropletsMixedBubbled001_NRM_2K.jpg"
+    "/environment/WaterDropletsMixedBubbled001_NRM_1K.jpg"
   );
   normalMap.colorSpace = THREE.LinearSRGBColorSpace;
   normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;

@@ -1,7 +1,6 @@
 import React from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
-import { FaceMesh } from "@mediapipe/face_mesh";
+import { PerspectiveCamera } from "@react-three/drei";
 import SchoolOfFish from "./components/SchoolOfFish";
 import { useAppStore } from "./store/store";
 import Floor from "./components/Floor";
@@ -12,66 +11,98 @@ import CameraParallax from "./components/CameraParallax";
 import Lighting from "./components/Lighting";
 import { Leva } from "leva";
 
-function App() {
-  const videoRef = React.useRef<HTMLVideoElement>(null);
-  const cameraRef = React.useRef<any>(null);
-  const headPosRef = React.useRef({ x: 0.5, y: 0.5 });
+import { type PerspectiveCamera as TPerspectiveCamera } from "three";
+import HeadTracking from "./components/HeadTracking";
+import { classNames } from "./utils";
+import Links from "./components/Links";
 
-  const bounds = useAppStore((state) => state.bounds);
+const useCameraAccess = () => {
+  const [hasCamera, setHasCamera] = React.useState(false);
 
   React.useEffect(() => {
-    const initCamera = async () => {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      videoRef.current.srcObject = stream;
-
-      if (videoRef.current) {
-        // videoRef.current.srcObject = stream;
-        // videoRef.current.play();
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current.play();
-        };
-      }
-
-      const faceMeshSolution = new FaceMesh({
-        locateFile: (file) => `/mediapipe/${file}`,
-      });
-      faceMeshSolution.setOptions({
-        maxNumFaces: 1,
-        refineLandmarks: true,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-      });
-
-      faceMeshSolution.onResults((results) => {
-        if (results.multiFaceLandmarks && results.multiFaceLandmarks[0]) {
-          const nose = results.multiFaceLandmarks[0][1]; // Nose tip
-          headPosRef.current.x = nose.x; // normalized 0..1
-          headPosRef.current.y = nose.y;
-        }
-      });
-
-      const video = videoRef.current!;
-      const sendFrame = async () => {
-        if (video.readyState >= 2) {
-          await faceMeshSolution.send({ image: video });
-        }
-        requestAnimationFrame(sendFrame);
-      };
-      sendFrame();
-    };
-
-    initCamera();
+    navigator.permissions.query({ name: "camera" }).then((status) => {
+      setHasCamera(status.state === "granted");
+    });
   }, []);
+
+  const requestCameraAccess = React.useCallback(async () => {
+    const { state } = await navigator.permissions.query({ name: "camera" });
+
+    if (state === "granted") {
+      setHasCamera(true);
+      return;
+    }
+
+    try {
+      await navigator.mediaDevices.getUserMedia({ video: true });
+      setHasCamera(true);
+    } catch (error) {
+      console.error("Camera access denied or error:", error);
+      setHasCamera(false);
+    }
+  }, []);
+
+  return { hasCamera, requestCameraAccess };
+};
+
+function App() {
+  const cameraRef = React.useRef<TPerspectiveCamera>(null);
+  const headPosition = React.useRef({ x: 0.5, y: 0.5 });
+
+  const bounds = useAppStore((state) => state.bounds);
+  const experienceStarted = useAppStore((state) => state.experienceStarted);
+  const startExperience = useAppStore((state) => state.startExperience);
+
+  const { hasCamera, requestCameraAccess } = useCameraAccess();
 
   return (
     <main className="w-full h-screen">
       <Leva hidden />
-      <video
-        ref={videoRef}
-        className="hidden w-96 aspect-video z-10 top-0 left-0"
-      />
+      <HeadTracking hasCamera={hasCamera} headPosition={headPosition} />
+      {!experienceStarted && (
+        <div className="fixed poppins-regular text-stone-50 h-screen w-full z-10 top-0 left-0 flex flex-col items-center backdrop-blur-md bg-stone-900/25">
+          <div className="flex flex-col items-center gap-4 max-w-2xl">
+            <h1 className="pt-8 poppins-bold-italic flex flex-col text-4xl">
+              Aquarium Parallax
+            </h1>
+            <p className="text-center text-xl">
+              Explore a peaceful underwater world right on your screen. With
+              your camera and head tracking, the aquarium responds to your
+              movements, making the experience feel more immersive.
+            </p>
+
+            <p className="text-center text-xl">
+              For the best experience, use a desktop with your camera enabled.
+              If you'd prefer not to use the camera, the aquarium still serves
+              as a static, calming display.
+            </p>
+
+            <button
+              onClick={requestCameraAccess}
+              className={classNames(
+                "poppins-medium p-4 rounded-md bg-stone-800 mt-8",
+                hasCamera ? "border-2 border-green-500" : "bg-stone-500"
+              )}
+              disabled={hasCamera}
+            >
+              {hasCamera ? "Camera access granted ✅" : "Allow camera access"}
+            </button>
+
+            <button
+              onClick={() => startExperience()}
+              className={classNames(
+                "text-stone-900 poppins-medium p-4 rounded-md",
+                hasCamera ? "bg-green-500" : "bg-orange-500"
+              )}
+            >
+              {hasCamera ? "Start" : "Start without camera"}
+            </button>
+          </div>
+        </div>
+      )}
+
       <Canvas className="bg-slate-950" shadows>
-        <OrbitControls />
+        {/* <OrbitControls /> */}
         <PerspectiveCamera
           ref={(camera) => {
             if (camera) {
@@ -86,18 +117,24 @@ function App() {
           makeDefault
         />
         <Lighting />
-        {/* <CameraParallax headPosRef={headPosRef} /> */}
+        <CameraParallax headPosition={headPosition} />
         <Background />
         <Tank />
-        <SchoolOfFish fishId={FISH_IDS.GOLD_FISH} />
-        <SchoolOfFish fishId={FISH_IDS.KOI} />
-        <SchoolOfFish fishId={FISH_IDS.BETTA} />
-        <SchoolOfFish fishId={FISH_IDS.BLUE_TANG} />
-        <SchoolOfFish fishId={FISH_IDS.MANDARIN_FISH} />
+        {experienceStarted && (
+          <>
+            <SchoolOfFish fishId={FISH_IDS.GOLD_FISH} />
+            <SchoolOfFish fishId={FISH_IDS.KOI} />
+            <SchoolOfFish fishId={FISH_IDS.BETTA} />
+            <SchoolOfFish fishId={FISH_IDS.BLUE_TANG} />
+            <SchoolOfFish fishId={FISH_IDS.MANDARIN_FISH} />
+          </>
+        )}
         <Floor />
         {/* Helpers */}
         {/* <axesHelper /> */}
       </Canvas>
+
+      <Links />
     </main>
   );
 }

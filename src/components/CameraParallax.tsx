@@ -2,20 +2,20 @@ import { useFrame, useThree } from "@react-three/fiber";
 import React from "react";
 import * as THREE from "three";
 const CameraParallax = ({
-  headPosRef,
+  headPosition,
 }: {
-  headPosRef: React.MutableRefObject<{ x: number; y: number }>;
+  headPosition: React.RefObject<{ x: number; y: number }>;
 }) => {
   const { camera } = useThree();
   const target = React.useRef(new THREE.Vector3());
 
   useFrame(() => {
-    const nx = headPosRef.current.x;
-    const ny = headPosRef.current.y;
+    const nx = headPosition.current.x;
+    const ny = headPosition.current.y;
 
     // Smooth the input
-    const smoothedHeadX = 0.1 * nx + 0.9 * headPosRef.current.x;
-    const smoothedHeadY = 0.1 * ny + 0.9 * headPosRef.current.y;
+    const smoothedHeadX = 0.1 * nx + 0.9 * headPosition.current.x;
+    const smoothedHeadY = 0.1 * ny + 0.9 * headPosition.current.y;
 
     const px = (smoothedHeadX - 0.5) * 2;
     const py = (smoothedHeadY - 0.5) * 2;
