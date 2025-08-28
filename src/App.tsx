@@ -15,6 +15,7 @@ import { type PerspectiveCamera as TPerspectiveCamera } from "three";
 import HeadTracking from "./components/HeadTracking";
 import { classNames } from "./utils";
 import Links from "./components/Links";
+import { Perf } from "r3f-perf";
 
 const useCameraAccess = () => {
   const [hasCamera, setHasCamera] = React.useState(false);
@@ -132,6 +133,7 @@ function App() {
         <Floor />
         {/* Helpers */}
         {/* <axesHelper /> */}
+        <Perf />
       </Canvas>
 
       <Links />
