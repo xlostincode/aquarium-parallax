@@ -1,6 +1,6 @@
 import React from "react";
 import { Canvas } from "@react-three/fiber";
-import { PerspectiveCamera } from "@react-three/drei";
+import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import SchoolOfFish from "./components/SchoolOfFish";
 import { useAppStore } from "./store/store";
 import Floor from "./components/Floor";
@@ -103,7 +103,7 @@ function App() {
       )}
 
       <Canvas className="bg-slate-950" shadows>
-        {/* <OrbitControls /> */}
+        <OrbitControls />
         <PerspectiveCamera
           ref={(camera) => {
             if (camera) {
@@ -118,7 +118,7 @@ function App() {
           makeDefault
         />
         <Lighting />
-        <CameraParallax headPosition={headPosition} />
+        {/* <CameraParallax headPosition={headPosition} /> */}
         <Background />
         <Tank />
         {experienceStarted && (
@@ -132,7 +132,7 @@ function App() {
         )}
         <Floor />
         {/* Helpers */}
-        {/* <axesHelper /> */}
+        <axesHelper />
         <Perf />
       </Canvas>
 

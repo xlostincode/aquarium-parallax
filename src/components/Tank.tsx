@@ -51,7 +51,7 @@ const Tank = () => {
           -bounds.z - wallThicknessHalf,
         ]}
       >
-        <boxGeometry args={[bounds.x * 10, bounds.y * 5, wallThickness]} />
+        <boxGeometry args={[bounds.x * 4, bounds.y * 5, wallThickness]} />
 
         <meshPhysicalMaterial
           normalMap={normalMap}

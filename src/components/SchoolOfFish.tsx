@@ -30,12 +30,12 @@ const SchoolOfFish = ({ fishId }: Props) => {
         movementSpeed: randomInRange(0.02, 0.2),
         lerpSpeed: randomInRange(0.02, 0.2),
         center: new THREE.Vector3(
-          (Math.random() - 0.5) * 40,
-          (Math.random() - 0.5) * 20,
-          (Math.random() - 0.5) * 20
+          (Math.random() - 0.5) * bounds.x,
+          (Math.random() - 0.5) * bounds.y,
+          (Math.random() - 0.5) * bounds.z
         ),
       })),
-    [fishCount]
+    [fishCount, bounds]
   );
 
   // TODO: Maybe use useImperativeHandle

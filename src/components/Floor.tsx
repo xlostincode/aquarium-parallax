@@ -32,13 +32,13 @@ const Floor = () => {
 
   // Generate terrain heights using Simplex noise
   const geometry = React.useMemo(() => {
-    const width = bounds.x * 10;
+    const width = bounds.x * 4;
     const height = bounds.z * 5;
     const scale = 2;
-    const segments = 256;
+    const segments = 128;
     const intensity = 0.4;
 
-    const geom = new THREE.PlaneGeometry(width, height, segments, segments);
+    const geom = new THREE.PlaneGeometry(width, height, segments, 64);
 
     geom.rotateX(-Math.PI / 2); // Make plane horizontal
 
@@ -107,7 +107,6 @@ const Floor = () => {
           );
         })}
       </Instances>
-      {/* args={[1, 8, 1, 16]} */}
 
       <Coral />
     </group>
