@@ -10,7 +10,6 @@ const CameraParallax = ({
   const { camera } = useThree();
   const target = React.useRef(new THREE.Vector3());
   const smoothed = React.useRef({ x: 0, y: 0 });
-
   useFrame(() => {
     const targetX = headPosition.current?.x ?? 0.5;
     const targetY = headPosition.current?.y ?? 0.5;
@@ -28,7 +27,7 @@ const CameraParallax = ({
     target.current.set(moveX, -moveY, camera.position.z);
     camera.position.lerp(target.current, 0.1);
 
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(0, -1.5, 0);
   });
 
   return null;

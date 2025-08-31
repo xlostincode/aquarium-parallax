@@ -89,7 +89,7 @@ const Floor = () => {
         position={[0, -bounds.y, 0 + (bounds.z * 5) / 2 - bounds.z]}
         receiveShadow
       >
-        <meshStandardMaterial color="#8f4829" flatShading={false} />
+        <meshStandardMaterial color="#753e26" flatShading={false} />
       </mesh>
 
       <Instances limit={totalPebbles} receiveShadow>
