@@ -49,12 +49,19 @@ const useCameraAccess = () => {
 function App() {
   const cameraRef = React.useRef<TPerspectiveCamera>(null);
   const headPosition = React.useRef({ x: 0.5, y: 0.5 });
+  const audioRef = React.useRef<HTMLAudioElement>(null);
 
   const bounds = useAppStore((state) => state.bounds);
   const experienceStarted = useAppStore((state) => state.experienceStarted);
   const startExperience = useAppStore((state) => state.startExperience);
 
   const { hasCamera, requestCameraAccess } = useCameraAccess();
+
+  React.useEffect(() => {
+    if (experienceStarted) {
+      audioRef.current?.play();
+    }
+  }, [experienceStarted]);
 
   return (
     <main className="w-full h-screen">
@@ -102,8 +109,10 @@ function App() {
         </div>
       )}
 
+      <audio ref={audioRef} src="/audios/ambience.mp3" loop />
+
       <Canvas className="bg-slate-950" shadows>
-        <OrbitControls />
+        {/* <OrbitControls /> */}
         <PerspectiveCamera
           ref={(camera) => {
             if (camera) {
@@ -118,7 +127,7 @@ function App() {
           makeDefault
         />
         <Lighting />
-        {/* <CameraParallax headPosition={headPosition} /> */}
+        <CameraParallax headPosition={headPosition} />
         <Background />
         <Tank />
         {experienceStarted && (
@@ -132,8 +141,8 @@ function App() {
         )}
         <Floor />
         {/* Helpers */}
-        <axesHelper />
-        <Perf />
+        {/* <axesHelper /> */}
+        {/* <Perf /> */}
       </Canvas>
 
       <Links />

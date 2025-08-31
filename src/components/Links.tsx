@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAppStore } from "../store/store";
 import { classNames } from "../utils";
+import React from "react";
 
 const Links = () => {
   const experienceStarted = useAppStore((state) => state.experienceStarted);
@@ -15,34 +16,37 @@ const Links = () => {
   }, [experienceStarted]);
 
   return (
-    <footer
-      className={classNames(
-        !showLinks && "opacity-50 hover:opacity-100",
-        "fixed z-10 bottom-2 left-2 flex gap-4 text-stone-900 p-2 rounded-md"
-      )}
-    >
-      <button onClick={() => setShowLinks(!showLinks)}>Links</button>
+    <React.Fragment>
+      <footer
+        className={classNames(
+          "absolute z-10 bottom-2 left-2 flex gap-4 text-stone-900 p-2 rounded-md",
+          !showLinks && "opacity-50 hover:opacity-100",
+          !experienceStarted && "bg-blue-200 backdrop-blur-2xl"
+        )}
+      >
+        <button onClick={() => setShowLinks(!showLinks)}>Links</button>
 
-      {showLinks && (
-        <div className="flex gap-4 ">
-          <a href="https://github.com/xlostincode" target="_blank">
-            Github
-          </a>
-          <a href="https://x.com/0xlostincode" target="_blank">
-            X/Twitter
-          </a>
-          <a href="https://www.youtube.com/@0xLostInCode" target="_blank">
-            Youtube
-          </a>
+        {showLinks && (
+          <div className="flex gap-4 font-semibold">
+            <a href="https://github.com/xlostincode" target="_blank">
+              Github
+            </a>
+            <a href="https://x.com/0xlostincode" target="_blank">
+              X/Twitter
+            </a>
+            <a href="https://www.youtube.com/@0xLostInCode" target="_blank">
+              Youtube
+            </a>
 
-          <button onClick={() => setShowAttribution(!showAttribution)}>
-            Attribution
-          </button>
-        </div>
-      )}
+            <button onClick={() => setShowAttribution(!showAttribution)}>
+              Attribution
+            </button>
+          </div>
+        )}
+      </footer>
 
       {showAttribution && (
-        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-2 bg-stone-900 text-stone-100 p-4 rounded-md border-2 border-stone-700 mx-auto">
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col gap-2 bg-stone-900 text-stone-100 p-4 rounded-md border-2 border-stone-700 mx-auto">
           <div className="flex justify-between">
             <h2 className="text-lg">Attributions</h2>
             <button onClick={() => setShowAttribution(!showAttribution)}>
@@ -94,9 +98,16 @@ const Links = () => {
           >
             Aquarium icons created by Freepik - Flaticon
           </a>
+
+          <a
+            href="https://pixabay.com/sound-effects/aquarium-ambience-sounds-10-min-193236/"
+            target="_blank"
+          >
+            Aquarium Ambience Sounds by JoelFazhari - pixabay
+          </a>
         </div>
       )}
-    </footer>
+    </React.Fragment>
   );
 };
 

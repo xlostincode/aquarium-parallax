@@ -6,10 +6,7 @@ export const FISH_IDS = {
   MANDARIN_FISH: "/models/mandarin_fish.glb",
 } as const;
 
-export const FISH_DATA: Record<
-  (typeof FISH_IDS)[keyof typeof FISH_IDS],
-  Record<string, string | number>
-> = {
+export const FISH_DATA = {
   "/models/koi.glb": {
     animation: "Fish_Armature|Swimming_Normal",
   },

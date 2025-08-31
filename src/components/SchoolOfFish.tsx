@@ -39,10 +39,9 @@ const SchoolOfFish = ({ fishId }: Props) => {
   );
 
   // TODO: Maybe use useImperativeHandle
-  // TODO: Need to cache?
-  const setRefForFish = (i: number, obj: THREE.Object3D) => {
+  const setRefForFish = React.useCallback((i: number, obj: THREE.Object3D) => {
     fishRefs.current[i] = obj;
-  };
+  }, []);
 
   useFrame((state, delta) => {
     const elapsedTime = state.clock.elapsedTime;
