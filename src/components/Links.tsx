@@ -28,7 +28,10 @@ const Links = () => {
 
         {showLinks && (
           <div className="flex gap-4 font-semibold">
-            <a href="https://github.com/xlostincode" target="_blank">
+            <a
+              href="https://github.com/xlostincode/aquarium-parallax"
+              target="_blank"
+            >
               Github
             </a>
             <a href="https://x.com/0xlostincode" target="_blank">
