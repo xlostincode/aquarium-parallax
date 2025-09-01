@@ -4,14 +4,18 @@ import { FaceMesh } from "@mediapipe/face_mesh";
 const HeadTracking = ({
   hasCamera,
   headPosition,
+  onSetupComplete,
 }: {
   hasCamera: boolean;
   headPosition: React.RefObject<{
     x: number;
     y: number;
   }>;
+  onSetupComplete: () => void;
 }) => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  const [setupComplete, setSetupComplete] = React.useState(false);
 
   React.useEffect(() => {
     if (!hasCamera) return;
@@ -58,7 +62,14 @@ const HeadTracking = ({
     };
 
     initCamera();
+    setSetupComplete(true);
   }, [hasCamera, headPosition]);
+
+  React.useEffect(() => {
+    if (setupComplete) {
+      onSetupComplete();
+    }
+  }, [onSetupComplete, setupComplete]);
 
   return (
     <video

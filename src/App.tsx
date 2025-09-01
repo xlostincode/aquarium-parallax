@@ -57,6 +57,9 @@ function App() {
 
   const { hasCamera, requestCameraAccess } = useCameraAccess();
 
+  const [headTrackingSetupComplete, setHeadTrackingSetupComplete] =
+    React.useState(false);
+
   React.useEffect(() => {
     if (experienceStarted) {
       audioRef.current?.play();
@@ -66,7 +69,12 @@ function App() {
   return (
     <main className="w-full h-screen">
       <Leva hidden />
-      <HeadTracking hasCamera={hasCamera} headPosition={headPosition} />
+      <HeadTracking
+        hasCamera={hasCamera}
+        headPosition={headPosition}
+        onSetupComplete={() => setHeadTrackingSetupComplete(true)}
+      />
+
       {!experienceStarted && (
         <div className="fixed poppins-regular text-stone-50 h-screen w-full z-10 top-0 left-0 flex flex-col items-center backdrop-blur-md bg-stone-900/25">
           <div className="flex flex-col items-center gap-4 max-w-2xl">
@@ -98,13 +106,17 @@ function App() {
 
             <button
               onClick={() => startExperience()}
+              disabled={hasCamera && !headTrackingSetupComplete}
               className={classNames(
-                "text-stone-900 poppins-medium p-4 rounded-md",
+                "text-stone-900 poppins-medium p-4 rounded-md disabled:bg-stone-500",
                 hasCamera ? "bg-green-500" : "bg-orange-500"
               )}
             >
               {hasCamera ? "Start" : "Start without camera"}
             </button>
+            {hasCamera && !headTrackingSetupComplete && (
+              <p>Please wait setting up camera...</p>
+            )}
           </div>
         </div>
       )}
